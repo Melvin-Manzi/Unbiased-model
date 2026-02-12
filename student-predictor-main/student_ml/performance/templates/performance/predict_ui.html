@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Student Performance Predictor</title>
+  <style>
+  :root {
+    --bg: linear-gradient(135deg, #0f172a, #1e293b);
+    --card: #111827;
+    --card-2: #0b1220;
+    --accent: #6366f1;
+    --accent-soft: rgba(99,102,241,0.15);
+    --success: #14b8a6;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --border: #1f2937;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    padding: 40px 20px;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  .nav {
+    max-width: 1000px;
+    margin: 0 auto 24px auto;
+    padding: 14px 20px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .nav .brand {
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--accent);
+  }
+
+  .nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    transition: 0.2s ease;
+  }
+
+  .nav a:hover {
+    background: var(--accent-soft);
+    color: white;
+  }
+
+  .header {
+    max-width: 1000px;
+    margin: 0 auto 16px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  .header .tag {
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .muted {
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .card {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: var(--card);
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--card-2);
+    color: var(--text);
+    font-size: 14px;
+    transition: 0.2s ease;
+  }
+
+  select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  .invalid select {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px rgba(239,68,68,0.15);
+  }
+
+  .field-error {
+    margin-top: 6px;
+    color: var(--danger);
+    font-size: 12px;
+  }
+
+  .field-guide {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .actions {
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  button {
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+
+  button[type="submit"] {
+    background: var(--accent);
+    color: white;
+  }
+
+  button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99,102,241,0.4);
+  }
+
+  .ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .ghost:hover {
+    background: rgba(255,255,255,0.05);
+  }
+
+  .result {
+    margin-top: 24px;
+    padding: 20px;
+    border-radius: 16px;
+    background: rgba(20,184,166,0.1);
+    border: 1px solid rgba(20,184,166,0.3);
+  }
+
+  .result .big {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--success);
+  }
+
+  .advice {
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: 14px;
+    background: rgba(99,102,241,0.1);
+    border: 1px solid var(--accent-soft);
+  }
+
+  .warnings {
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: 14px;
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.3);
+    color: var(--warning);
+  }
+
+  .error {
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: 14px;
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.3);
+    color: var(--danger);
+  }
+
+  .history {
+    margin-top: 30px;
+    padding: 20px;
+    border-radius: 16px;
+    background: var(--card-2);
+    border: 1px solid var(--border);
+  }
+
+  .history h2 {
+    margin-bottom: 12px;
+    font-size: 16px;
+  }
+
+  .history table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .history th,
+  .history td {
+    padding: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .history th {
+    color: var(--muted);
+    text-align: left;
+  }
+
+  .toast {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.3);
+    color: var(--warning);
+  }
+
+  @media (max-width: 768px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+</head>
+<body>
+  <div class="nav">
+    <div class="brand">Marks ML Predictor</div>
+    <div class="links">
+      <a href="#predictor">Predict</a>
+      <a href="#history-section">History</a>
+      <a href="/api/predict/" target="_blank" rel="noopener noreferrer">API</a>
+    </div>
+  </div>
+
+  <div class="header">
+    <h1>Student Performance Predictor</h1>
+    <div class="tag">UI</div>
+  </div>
+  <p class="muted">Enter values and click Predict. You’ll see a predicted performance index and advice.</p>
+
+  <div id="predictor" class="card">
+    <form id="predict-form" method="post">
+      {% csrf_token %}
+
+      <div class="grid">
+        <div class="row">
+          <label for="hours_studied">Hours studied</label>
+          <select id="hours_studied" name="hours_studied" required></select>
+          <div class="field-error" id="error-hours_studied"></div>
+          <div class="field-guide" id="guide-hours_studied"></div>
+        </div>
+
+        <div class="row">
+          <label for="previous_scores">Previous scores</label>
+          <select id="previous_scores" name="previous_scores" required></select>
+          <div class="field-error" id="error-previous_scores"></div>
+          <div class="field-guide" id="guide-previous_scores"></div>
+        </div>
+
+        <div class="row">
+          <label for="extracurricular">Extracurricular</label>
+          <select id="extracurricular" name="extracurricular" required>
+            <option value="true" {% if form.extracurricular == 'true' %}selected{% endif %}>Yes</option>
+            <option value="false" {% if form.extracurricular == 'false' %}selected{% endif %}>No</option>
+          </select>
+          <div class="field-error" id="error-extracurricular"></div>
+          <div class="field-guide" id="guide-extracurricular"></div>
+        </div>
+
+        <div class="row">
+          <label for="sleep_hours">Sleep hours</label>
+          <select id="sleep_hours" name="sleep_hours" required></select>
+          <div class="field-error" id="error-sleep_hours"></div>
+          <div class="field-guide" id="guide-sleep_hours"></div>
+        </div>
+
+        <div class="row">
+          <label for="sample_papers">Sample papers practiced</label>
+          <select id="sample_papers" name="sample_papers" required></select>
+          <div class="field-error" id="error-sample_papers"></div>
+          <div class="field-guide" id="guide-sample_papers"></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="predict-btn" type="submit">Predict</button>
+        <button id="reset-btn" type="button" class="ghost">Reset</button>
+        <span id="status-text" class="muted"></span>
+      </div>
+    </form>
+
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if predicted_performance_index %}
+      <div class="result">
+        Predicted Performance Index: <strong>{{ predicted_performance_index }}</strong>
+      </div>
+    {% endif %}
+
+    <div id="insights"></div>
+    <div id="history" class="history" style="display:none;"></div>
+  </div>
+
+  <script>
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+      return null;
+    }
+
+    const DEFAULT_CONSTRAINTS = {
+      hours_studied: { min: 0, max: 18, guide: 'Hours studied per day (0–18).' },
+      previous_scores: { min: 0, max: 100, guide: 'Previous score percentage (0–100).' },
+      extracurricular: { type: 'boolean', guide: 'Extracurricular participation (true/false).' },
+      sleep_hours: { min: 0, max: 16, guide: 'Sleep hours per day (0–16).' },
+      sample_papers: { min: 0, max: 50, guide: 'Number of sample papers practiced (0–50).' },
+    };
+
+    function setRowInvalid(field, isInvalid) {
+      const input = document.getElementById(field);
+      if (!input) return;
+      const row = input.closest('.row');
+      if (!row) return;
+      row.classList.toggle('invalid', Boolean(isInvalid));
+    }
+
+    function clearFieldMessages(fields) {
+      for (const f of fields) {
+        const e = document.getElementById(`error-${f}`);
+        if (e) e.textContent = '';
+        const g = document.getElementById(`guide-${f}`);
+        if (g) g.textContent = DEFAULT_CONSTRAINTS[f]?.guide || '';
+        setRowInvalid(f, false);
+      }
+    }
+
+    function validateClientSide(payload) {
+      const errors = {};
+
+      for (const [k, c] of Object.entries(DEFAULT_CONSTRAINTS)) {
+        if (k === 'extracurricular') continue;
+        const v = payload[k];
+        if (Number.isNaN(v) || v === null || v === undefined) {
+          errors[k] = 'Please enter a number.';
+          continue;
+        }
+        if (c.min !== undefined && v < c.min) errors[k] = `Must be ≥ ${c.min}.`;
+        if (c.max !== undefined && v > c.max) errors[k] = `Must be ≤ ${c.max}.`;
+      }
+
+      return errors;
+    }
+
+    function validateSelections(fields) {
+      const missing = [];
+      for (const f of fields) {
+        if (f === 'extracurricular') continue;
+        const el = document.getElementById(f);
+        if (!el) continue;
+        if (el.value === '') {
+          missing.push(f);
+        }
+      }
+      return missing;
+    }
+
+    const form = document.getElementById('predict-form');
+    const resultBox = document.querySelector('.result');
+    const errorBox = document.querySelector('.error');
+    const predictBtn = document.getElementById('predict-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const statusText = document.getElementById('status-text');
+    const insightsEl = document.getElementById('insights');
+    const historyEl = document.getElementById('history');
+
+    const fields = ['hours_studied', 'previous_scores', 'extracurricular', 'sleep_hours', 'sample_papers'];
+    clearFieldMessages(fields);
+
+    function fillSelectRange(id, min, max, step, placeholder) {
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      el.innerHTML = '';
+
+      const ph = document.createElement('option');
+      ph.value = '';
+      ph.textContent = placeholder;
+      ph.disabled = true;
+      ph.selected = true;
+      el.appendChild(ph);
+
+      for (let v = min; v <= max; v += step) {
+        const opt = document.createElement('option');
+        opt.value = String(v);
+        opt.textContent = String(v);
+        el.appendChild(opt);
+      }
+    }
+
+    function applyInitialValuesFromServer() {
+      const initial = {
+        hours_studied: '{{ form.hours_studied|default:"" }}',
+        previous_scores: '{{ form.previous_scores|default:"" }}',
+        extracurricular: '{{ form.extracurricular|default:"" }}',
+        sleep_hours: '{{ form.sleep_hours|default:"" }}',
+        sample_papers: '{{ form.sample_papers|default:"" }}',
+      };
+
+      for (const [k, v] of Object.entries(initial)) {
+        const el = document.getElementById(k);
+        if (!el) continue;
+        if (v !== '') {
+          el.value = v;
+        }
+      }
+    }
+
+    // Populate dropdowns using allowed ranges
+    fillSelectRange('hours_studied', 0, 18, 1, 'Select hours');
+    fillSelectRange('previous_scores', 0, 100, 5, 'Select score');
+    fillSelectRange('sleep_hours', 0, 16, 1, 'Select sleep');
+    fillSelectRange('sample_papers', 0, 50, 1, 'Select papers');
+    applyInitialValuesFromServer();
+
+    // Make history link work
+    historyEl.id = 'history-section';
+
+    for (const f of fields) {
+      const el = document.getElementById(f);
+      if (!el) continue;
+      el.addEventListener('input', () => {
+        const e = document.getElementById(`error-${f}`);
+        if (e) e.textContent = '';
+        setRowInvalid(f, false);
+      });
+      el.addEventListener('change', () => {
+        const e = document.getElementById(`error-${f}`);
+        if (e) e.textContent = '';
+        setRowInvalid(f, false);
+      });
+    }
+
+    resetBtn.addEventListener('click', () => {
+      form.reset();
+      clearFieldMessages(fields);
+      statusText.textContent = '';
+      insightsEl.innerHTML = '';
+      const r = document.querySelector('.result');
+      if (r) r.remove();
+      const t = document.querySelector('.toast');
+      if (t) t.remove();
+      const e = document.querySelector('.error');
+      if (e) e.remove();
+    });
+
+    function renderWarnings(warnings) {
+      if (!Array.isArray(warnings) || warnings.length === 0) {
+        return '';
+      }
+      return `<div class="warnings"><strong>Insights / Warnings</strong><ul>${warnings.map(w => `<li>${w}</li>`).join('')}</ul></div>`;
+    }
+
+    function renderHistory(records) {
+      if (!Array.isArray(records) || records.length === 0) {
+        historyEl.style.display = 'none';
+        historyEl.innerHTML = '';
+        return;
+      }
+
+      const rows = records.map(r => {
+        const dt = r.created_at ? new Date(r.created_at) : null;
+        const when = dt && !Number.isNaN(dt.getTime()) ? dt.toLocaleString() : (r.created_at || '');
+        const extra = (Array.isArray(r.warnings) && r.warnings.length) ? `Warnings: ${r.warnings.length}` : '';
+        return `
+          <tr>
+            <td>${when}</td>
+            <td><strong>${r.predicted_performance_index}</strong></td>
+            <td>${r.hours_studied}</td>
+            <td>${r.previous_scores}</td>
+            <td>${r.sleep_hours}</td>
+            <td>${r.sample_papers}</td>
+            <td>${r.extracurricular ? 'Yes' : 'No'}</td>
+            <td>${extra}</td>
+          </tr>
+        `;
+      }).join('');
+
+      historyEl.style.display = '';
+      historyEl.innerHTML = `
+        <h2>Recent predictions</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>When</th>
+              <th>Pred</th>
+              <th>Hours</th>
+              <th>Prev</th>
+              <th>Sleep</th>
+              <th>Papers</th>
+              <th>Extra</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
+    }
+
+    async function fetchHistory() {
+      try {
+        const res = await fetch('/api/history/', { headers: { 'Accept': 'application/json' } });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          renderHistory([]);
+          return;
+        }
+        renderHistory(data.results || []);
+      } catch (_) {
+        renderHistory([]);
+      }
+    }
+
+    fetchHistory();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (resultBox) resultBox.remove();
+      if (errorBox) errorBox.remove();
+
+      clearFieldMessages(fields);
+
+      const missingSelections = validateSelections(fields);
+      if (missingSelections.length) {
+        for (const f of missingSelections) {
+          const el = document.getElementById(`error-${f}`);
+          if (el) el.textContent = 'Please select a value.';
+          setRowInvalid(f, true);
+        }
+        const div = document.createElement('div');
+        div.className = 'toast';
+        div.textContent = 'Please select values for all fields before predicting.';
+        document.querySelector('.card').appendChild(div);
+        return;
+      }
+
+      const payload = {
+        hours_studied: Number(document.getElementById('hours_studied').value),
+        previous_scores: Number(document.getElementById('previous_scores').value),
+        extracurricular: document.getElementById('extracurricular').value === 'true',
+        sleep_hours: Number(document.getElementById('sleep_hours').value),
+        sample_papers: Number(document.getElementById('sample_papers').value),
+      };
+
+      const clientErrors = validateClientSide(payload);
+      if (Object.keys(clientErrors).length) {
+        for (const [k, v] of Object.entries(clientErrors)) {
+          const el = document.getElementById(`error-${k}`);
+          if (el) el.textContent = v;
+          setRowInvalid(k, true);
+        }
+        const div = document.createElement('div');
+        div.className = 'toast';
+        div.textContent = 'Please correct the highlighted fields before predicting.';
+        document.querySelector('.card').appendChild(div);
+        return;
+      }
+
+      predictBtn.disabled = true;
+      predictBtn.textContent = 'Predicting…';
+      statusText.textContent = 'Sending request to the model…';
+
+      try {
+        const res = await fetch('/api/predict/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          const msg = data.error || `Request failed (${res.status})`;
+          const fieldErrors = data.field_errors || {};
+          const missing = data.missing_fields || [];
+          const constraints = data.constraints || {};
+
+          for (const m of missing) {
+            const el = document.getElementById(`error-${m}`);
+            if (el) el.textContent = 'This field is required.';
+            setRowInvalid(m, true);
+          }
+
+          for (const [k, v] of Object.entries(fieldErrors)) {
+            const el = document.getElementById(`error-${k}`);
+            if (el) el.textContent = String(v);
+            setRowInvalid(k, true);
+          }
+
+          for (const [k, c] of Object.entries(constraints)) {
+            const el = document.getElementById(`guide-${k}`);
+            if (!el) continue;
+            if (c && c.guide) {
+              el.textContent = c.guide;
+            } else if (c && c.min !== undefined && c.max !== undefined) {
+              el.textContent = `Allowed range: ${c.min}–${c.max}`;
+            }
+          }
+
+          const div = document.createElement('div');
+          div.className = 'error';
+          div.textContent = msg;
+          document.querySelector('.card').appendChild(div);
+          statusText.textContent = '';
+          return;
+        }
+
+        const div = document.createElement('div');
+        div.className = 'result';
+        const advice = Array.isArray(data.advice) ? data.advice : [];
+        const warnings = Array.isArray(data.warnings) ? data.warnings : [];
+        const adviceHtml = advice.length
+          ? `<div class="advice"><strong>Advice</strong><ul>${advice.map(a => `<li>${a}</li>`).join('')}</ul></div>`
+          : '';
+        const warningsHtml = renderWarnings(warnings);
+        div.innerHTML = `<div class="muted">Predicted Performance Index</div><div class="big">${data.predicted_performance_index}</div>${warningsHtml}${adviceHtml}`;
+        document.querySelector('.card').appendChild(div);
+        fetchHistory();
+        statusText.textContent = 'Done.';
+      } catch (err) {
+        const div = document.createElement('div');
+        div.className = 'error';
+        div.textContent = String(err);
+        document.querySelector('.card').appendChild(div);
+        statusText.textContent = '';
+      } finally {
+        predictBtn.disabled = false;
+        predictBtn.textContent = 'Predict';
+      }
+    });
+  </script>
+</body>
+</html>
