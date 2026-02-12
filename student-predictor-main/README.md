@@ -1,4 +1,4 @@
-# Marks_ML-predictor-
+# Student's Performance_Prediction_Unbiased Model__ML-predictor-
 
 A Django + Django REST Framework student performance predictor.
 
@@ -52,10 +52,10 @@ Open:
 
 ```json
 {
-  "hours_studied": 6,
-  "previous_scores": 70,
+  "hours_studied": 8,
+  "previous_scores": 90,
   "extracurricular": true,
-  "sleep_hours": 7,
-  "sample_papers": 4
+  "sleep_hours": 8,
+  "sample_papers": 6
 }
 ```
